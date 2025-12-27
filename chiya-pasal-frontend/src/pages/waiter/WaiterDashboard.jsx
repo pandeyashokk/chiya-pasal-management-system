@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import API from "../../utils/api";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8000");
+const socket = io();
 
 const WaiterDashboard = () => {
   const [orders, setOrders] = useState([]);

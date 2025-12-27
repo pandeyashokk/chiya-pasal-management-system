@@ -4,7 +4,7 @@ import API from "../../utils/api";
 import { io } from "socket.io-client";
 import { ShoppingCart, Plus, Minus, Trash2 } from "lucide-react";
 
-const socket = io("http://localhost:8000");
+const socket = io();
 
 const CustomerMenu = () => {
   const { tableId } = useParams();
