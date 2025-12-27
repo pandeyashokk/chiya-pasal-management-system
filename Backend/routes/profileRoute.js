@@ -13,6 +13,6 @@ const rolesMiddleware = require("../middlewares/rolesMiddleware");
 const adminOnly = rolesMiddleware("admin");
 
 router.get("/", isAuthorized, getMyProfile);
-router.post("/", isAuthorized, adminOnly, updateMyProfile);
+router.put("/", isAuthorized, adminOnly, updateMyProfile);
 
 module.exports = router;

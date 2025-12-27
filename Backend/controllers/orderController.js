@@ -56,7 +56,7 @@ const placeOrder = async (req, res, next) => {
     });
     const io = req.app.get("io");
     io.to("kitchen").emit("newOrder", order);
-    io.to("admin").emit("newOrder", order); 
+    io.to("admin").emit("newOrder", order);
 
     res.status(201).json({
       code: 201,
@@ -71,14 +71,39 @@ const placeOrder = async (req, res, next) => {
 
 const getPendingOrders = async (req, res, next) => {
   try {
-    const status = req.query.status || "Pending";
-    const orders = await Order.find({ status }).sort({ createdAt: -1 });
+    // const status = req.query.status || "Pending";
+    const orders = await Order.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       code: 200,
       status: true,
-      message: "Pending orders fetched",
+      message: "Orders fetched Successfully!",
       data: orders,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deletePaidOrder = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const order = await Order.findOne({ _id: id, status: "Paid" });
+
+    if (!order) {
+      res.code = 404;
+      throw new Error("Paid order not found");
+    }
+
+    await Order.findByIdAndDelete(id);
+
+    res.status(200).json({
+      code: 200,
+      status: true,
+      message: "Successfully deleted paid order",
+      data: {
+        deletedOrderId: order.orderId,
+      },
     });
   } catch (error) {
     next(error);
@@ -152,7 +177,7 @@ const updateOrderStatus = async (req, res, next) => {
       io.to("admin").emit("orderUpdate", order);
     }
 
-    // Notify customer table 
+    // Notify customer table
     if (["Preparing", "Ready", "Served", "Paid"].includes(status)) {
       io.to(`table-${order.tableId}`).emit("statusUpdate", {
         orderId: order.orderId,
@@ -181,6 +206,7 @@ const getKitchenOrders = async (req, res, next) => {
 
     //KOT
     const kotData = orders.map((order) => ({
+      objectId: order._id,
       orderId: order.orderId,
       tableId: order.tableId,
       items: order.items.map((item) => `${item.name} ------${item.quantity}`),
@@ -223,6 +249,7 @@ module.exports = {
   placeOrder,
   getPendingOrders,
   updateOrderStatus,
+  deletePaidOrder,
   getKitchenOrders,
   getWaiterOrders,
 };

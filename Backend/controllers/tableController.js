@@ -3,7 +3,13 @@ const { generateQR } = require("../utils/generateQR");
 
 const getTables = async (req, res, next) => {
   try {
-    const tables = await Table.find().sort({ tableId: 1 });
+    //extracts number from tableId (eg: T10 to 10)
+    const tables = (await Table.find()).sort((a, b) => {
+      const numA = parseInt(a.tableId.replace(/\D/g, ""));
+      const numB = parseInt(a.tableId.replace(/\D/g, ""));
+      return numA - numB;
+    });
+
     res.status(200).json({
       code: 200,
       status: true,

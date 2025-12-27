@@ -1,5 +1,5 @@
 const generateQR = (tableId) => {
-  return `https://chiya-pasal/table/${tableId}`;
+  return `http://localhost:8000/table/${tableId}`;
 };
 
 module.exports = { generateQR };

@@ -5,6 +5,7 @@ const {
   placeOrder,
   getPendingOrders,
   updateOrderStatus,
+  deletePaidOrder,
   getKitchenOrders,
   getWaiterOrders,
 } = require("../controllers/orderController");
@@ -20,6 +21,7 @@ const staffOnly = rolesMiddleware("admin", "kitchen", "waiter");
 router.post("/", placeOrder);
 router.get("/", isAuthorized, adminOnly, getPendingOrders);
 router.put("/:id", isAuthorized, staffOnly, updateOrderStatus);
+router.delete("/paid/:id", isAuthorized, adminOnly, deletePaidOrder);
 
 //route for getting kitchen order
 router.get("/kitchen", isAuthorized, kitchenOnly, getKitchenOrders);

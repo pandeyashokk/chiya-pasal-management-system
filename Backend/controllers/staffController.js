@@ -22,7 +22,7 @@ const createStaff = async (req, res, next) => {
 
     if (!["waiter", "kitchen"].includes(role)) {
       res.code = 400;
-      throw new Error("Role must be waiter or kitchen");
+      throw new Error("Role must be in all lowercase letters!");
     }
 
     const isExists = await User.findOne({ email });
@@ -40,7 +40,6 @@ const createStaff = async (req, res, next) => {
       role,
     });
     await staff.save();
-    
 
     res.status(201).json({
       code: 201,
